@@ -21,7 +21,7 @@ block_fb = 1
 timeout = 60
 total1 = total2 = total3 = timeout
 onset = 1
-image_directory = './Assets/Resources/Images/'
+image_directory = '../ShapeTapper/Assets/Resources/images/'
 screen_width = 1440
 screen_height = 900
 screen_aspect = screen_width/screen_height
@@ -75,7 +75,8 @@ def main():
     for block in range(0,num_blocks):
         for trial_num in range(0,num_trials):
             #figure out which images to use first
-            solo_files = get_solo_imgs(image_directory)
+            solo_files = get_solo_blake()
+            #solo_files = get_solo_blake()
             image_1 = solo_files[randrange(0,len(solo_files))]
             #figure out positions
             # get image sizes
@@ -160,6 +161,9 @@ def main():
 # gets all files with names matching the expression '^blake_[0-9]*.png$' (nothing before, nothing after.)
 def get_solo_imgs(directory):
     return [x for x in os.listdir(directory) if re.match('^solo[0-9]*.png$', x)]
+
+def get_solo_blake():
+    return ['blake_01.png','blake_04.png','blake_06.png','blake_07.png','blake_08.png','blake_10.png','blake_11.png','blake_12.png']
 
 
 def get_image_size(fname):

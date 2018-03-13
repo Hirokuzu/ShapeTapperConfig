@@ -20,7 +20,7 @@ block_fb = 1
 timeout = 5
 total1 = total2 = total3 = timeout
 onset = 1
-blake_directory = './Assets/Resources/Images/'
+blake_directory = './blake_images/'
 screen_width = 1920
 screen_height = 1080
 number_of_angles = 18 #number of angles, should divide 360 evenly
@@ -43,6 +43,9 @@ def main():
     if(len(sys.argv) == 3):
         num_blocks = int(sys.argv[1])
         num_trials = int(sys.argv[2])
+    else: # define number of blocks, trials per block
+        num_blocks = 4
+        num_trials = 10
 
     for block in range(0,num_blocks):
         for trial_num in range(0,num_trials):

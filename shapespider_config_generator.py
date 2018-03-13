@@ -17,7 +17,7 @@ import imghdr
 # other variable initializations. Should set so they can be changed/configured.
 feedback = 0
 practice_blocks = 1
-practice_trials = 10
+practice_trials = 8
 block_pass_percent = 0
 block_fb = 0
 timeout = 5
@@ -76,10 +76,16 @@ def main():
         num_blocks = int(sys.argv[1])
         num_trials = int(sys.argv[2])
     else:
-        num_blocks = 4
-        num_trials = 50
+        num_blocks = 5
+        block_distribution = {
+            'nnu_stay': 24,
+            'nnu_jump': 8,
+            'npo_jump': 6,
+            'nng_jump': 6
+        }
+        num_trials = sum(block_distribution.values())
         practice_blocks = 1
-        practice_trials = 10
+        practice_trials = 8
 
     total_blocks = num_blocks + practice_blocks
 
@@ -92,16 +98,25 @@ def main():
     jump_points = list(points)
     jump_points.remove(jump_start)
 
+    nun_prb = block_distribution['nnu_stay']/float(num_trials) # neutral no jump
+    nuj_prb = block_distribution['nnu_jump']/float(num_trials) # neutral jump
+    np_prob = block_distribution['npo_jump']/float(num_trials) # positive jump
+    nng_prb = block_distribution['nng_jump']/float(num_trials) # negative jump
+
     for block in range(0,total_blocks):
         if(practice_blocks >= 1):
             block_trials = practice_trials
+            neutral_trials = 4
+            neutral_jump = 2
+            neutral_pos = 1
+            neutral_neg = 1
         else:
             block_trials = num_trials
-
-        neutral_trials = int(block_trials * 0.6)
-        neutral_jump = int(block_trials * 0.2)
-        neutral_pos = int(block_trials * 0.1)
-        neutral_neg = int(block_trials * 0.1)
+            neutral_trials = int(round(block_trials * nun_prb))
+            neutral_jump = int(round(block_trials * nuj_prb))
+            neutral_pos = int(round(block_trials * np_prob))
+            neutral_neg = int(round(block_trials * nng_prb))
+        
         for trial_num in range(0,block_trials):
             
             # image 1 always neutral
@@ -112,7 +127,7 @@ def main():
             rot_img_1 = number_of_angles * randrange(0,360/number_of_angles)
             while not trial_set:
                 trial_probability = random.random()
-                if(trial_probability<0.6): # neutral neutral, no jump
+                if(trial_probability<nun_prb): # neutral neutral, no jump
                     if neutral_trials <= 0:
                         continue
                     else:
@@ -124,8 +139,8 @@ def main():
                         if(image_2 == image_1):
                             rot_img_2 = rot_img_1
                         else:
-                            rot_img_2 = number_of_angles * randrange(0,360/number_of_angles)
-                elif(trial_probability < 0.8): # Neutral Neutral, jump
+                            rot_img_2 = 0
+                elif(trial_probability < nun_prb + nuj_prb): # Neutral Neutral, jump
                     if neutral_jump <= 0:
                         continue
                     else:
@@ -134,8 +149,8 @@ def main():
                         image_2 = neutral_images[randrange(0,len(neutral_images))]
                         img_2_directory = neutral_images_directory
                         trial_set = True
-                        rot_img_2 = number_of_angles * randrange(0,360/number_of_angles)
-                elif(trial_probability < 0.9): # Neutral Positive, jump
+                        rot_img_2 = 0
+                elif(trial_probability < nun_prb + nuj_prb + np_prob): # Neutral Positive, jump
                     if neutral_pos <= 0:
                         continue
                     else:
@@ -156,9 +171,6 @@ def main():
                         img_2_directory = negative_images_directory
                         trial_set = True
                         rot_img_2 = 0
-
-
-
 
             #figure out positions
             # get image sizes

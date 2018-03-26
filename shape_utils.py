@@ -11,9 +11,11 @@ import imghdr
 # el2293t dimensions/screen size
 screen_width = 1920
 screen_height = 1080
-screen_size = 42 # inches
+screen_size = 42. # inches
 dpi = math.hypot(screen_width, screen_height)/screen_size
 screen_margin = 0
+cm_per_inch = 2.54
+format_string = "{:1.4f}"
 
 def get_margin_width(img_diag):
     return screen_width - img_diag - screen_margin * dpi
@@ -34,8 +36,8 @@ def get_blake_imgs(directory):
     return [x for x in os.listdir(directory) if re.match('^blake_[0-9]*.png$', x)]
 
 # gets all files with names matching the expression '^blake_[0-9]*.png$' (nothing before, nothing after.)
-def get_pngs(directory):
-    return [x for x in os.listdir(directory) if re.match('^.*.png$', x)]
+def get_images(directory):
+    return [x for x in os.listdir(directory) if re.match('^.*(.png|.gif|.jpeg|.jpg)$', x)]
 
 def get_scaling(vary_size, scaling_ratios):
     if(vary_size):

@@ -20,17 +20,17 @@ practice_blocks = 1
 practice_trials = 8
 block_pass_percent = 0
 block_fb = 0
-timeout = 5
+timeout = 1
 total1 = total2 = total3 = timeout
 onset = 1
 number_of_angles = 18 #number of angles, should divide 360 evenly
 ask_for_target = 1
 
+size_to_scale = 6.226744186046511627906976744186
 
-
-safety_margin_1 = 100. * 4.25 / su.cm_per_inch * su.dpi / su.screen_height
-safety_margin_2 = 100. * 4.25 / su.cm_per_inch * su.dpi / su.screen_height
-safety_margin_3 = 100. * 4.25 / su.cm_per_inch * su.dpi / su.screen_height
+safety_margin_1 = 100. * 6.22674 / su.cm_per_inch * su.dpi / su.screen_height
+safety_margin_2 = 100. * 6.22674 / su.cm_per_inch * su.dpi / su.screen_height
+safety_margin_3 = 100. * 6.22674 / su.cm_per_inch * su.dpi / su.screen_height
 
 fixation_x = 50 # percentage
 fixation_y = 50 + round(50. * 100. / float(su.screen_height)) # percentage
@@ -43,23 +43,6 @@ y_variance = 10 # also percentage
 smallest_x = fixation_x + initial_x
 smallest_radius = math.hypot(initial_x, y_variance)
 
-point_1 = [smallest_x, fixation_y + y_variance]
-point_2 = [point_1[0]+increment_x, point_1[1]]
-point_3 = [point_1[0]+2*increment_x, point_1[1]]
-
-point_4 = [64, fixation_y]
-point_5 = [66, fixation_y]
-point_6 = [68, fixation_y]
-
-point_7 = [point_1[0], fixation_y - y_variance]
-point_8 = [point_2[0], point_7[1]]
-point_9 = [point_3[0], point_7[1]]
-# points = [point_1, point_2, point_3, point_4, point_5, point_6, point_7, point_8, point_9] # don't judge my brain isn't working today
-points = [point_4, point_5, point_6]
-# points = []
-# for i in range(0,3):
-#     points.append([initial_x + increment_x * i, fixation_y])
-
 
 # make this into a list?
 # then have a set of stimuli
@@ -68,6 +51,17 @@ positive_images_directory = image_stimuli_directory + 'Positive/'
 negative_images_directory = image_stimuli_directory + 'Negative/'
 neu_neg_images_directory = image_stimuli_directory + 'neutral_negative/'
 neu_pos_images_directory = image_stimuli_directory + 'neutral_positive/'
+
+# Fixation for the flash experiment
+square_diamond_pair = ['diamond','square']
+triangle_pair = ['rtriangle','ltriangle']
+flash_points = [[[68.77,30.48],[71.42,50],[68.80,69.47]], # 40%
+                [[78.76,30],[80.57,50],[78.78,69.94]], # 60%
+                [[88.35,29.90],[89.81,50],[88.43,69.89]]] # 80%
+eccentricities = [40,60,80]
+square_mask = "square_mask"
+diamond_mask = "diamond_mask"
+
 
 #delimiter
 delimiter = ","
@@ -80,30 +74,35 @@ def main():
         num_trials = int(sys.argv[2])
     else:
         practice_blocks = 1
-        practice_trials = 8 
-        num_blocks = 5 # regular blocks
-        # use a dictionary?
-        # in GUI, check for directory, default keys folder name
-        stimuli_dirs = {
-            'positive': image_stimuli_directory + 'Positive/',
-            'negative': image_stimuli_directory + 'Negative/',
-            'neu_neg': image_stimuli_directory + 'neutral_negative/',
-            'neu_pos': image_stimuli_directory +'neutral_positive/'
-        }
-
-        # match key with above
-        stimuli = dict()
-        for key, value in stimuli_dirs.items():
-            stimuli[key] = su.get_images(value)
+        practice_trials = 24
+        num_blocks = 7 # regular blocks
 
         # GUI - options for trial types, positions, number of trials
-        trial_types = [('neu_pos','neu_pos',False,12),
-            ('neu_neg','neu_neg',False,12),
-            ('neu_pos','neu_pos',True,4),
-            ('neu_neg','neu_neg',True,4),
-            ('neu_neg','negative',True,6),
-            ('neu_pos','positive',True,6)
-        ]
+        trial_types = [(triangle_pair[0],triangle_pair[1],0,3,square_mask),
+                    (triangle_pair[0],triangle_pair[1],1,3,square_mask),
+                    (triangle_pair[0],triangle_pair[1],2,3,square_mask),
+                    (triangle_pair[1],triangle_pair[0],0,3,square_mask),
+                    (triangle_pair[1],triangle_pair[0],1,3,square_mask),
+                    (triangle_pair[1],triangle_pair[0],2,3,square_mask),
+                    (square_diamond_pair[0],square_diamond_pair[1],0,3,square_mask),
+                    (square_diamond_pair[0],square_diamond_pair[1],1,3,square_mask),
+                    (square_diamond_pair[0],square_diamond_pair[1],2,3,square_mask),
+                    (square_diamond_pair[1],square_diamond_pair[0],0,3,square_mask),
+                    (square_diamond_pair[1],square_diamond_pair[0],1,3,square_mask),
+                    (square_diamond_pair[1],square_diamond_pair[0],2,3,square_mask),
+                    (triangle_pair[0],triangle_pair[1],0,3,diamond_mask),
+                    (triangle_pair[0],triangle_pair[1],1,3,diamond_mask),
+                    (triangle_pair[0],triangle_pair[1],2,3,diamond_mask),
+                    (triangle_pair[1],triangle_pair[0],0,3,diamond_mask),
+                    (triangle_pair[1],triangle_pair[0],1,3,diamond_mask),
+                    (triangle_pair[1],triangle_pair[0],2,3,diamond_mask),
+                    (square_diamond_pair[0],square_diamond_pair[1],0,3,diamond_mask),
+                    (square_diamond_pair[0],square_diamond_pair[1],1,3,diamond_mask),
+                    (square_diamond_pair[0],square_diamond_pair[1],2,3,diamond_mask),
+                    (square_diamond_pair[1],square_diamond_pair[0],0,3,diamond_mask),
+                    (square_diamond_pair[1],square_diamond_pair[0],1,3,diamond_mask),
+                    (square_diamond_pair[1],square_diamond_pair[0],2,3,diamond_mask)
+                ]
 
         num_trials = 0
         for trial_type in trial_types:
@@ -113,36 +112,21 @@ def main():
 
     total_blocks = num_blocks + practice_blocks
 
-    # #figure out which images to use first
-    # positive_images = get_images(positive_images_directory)
-    # negative_images = get_images(neutral_negative)
-    # neu_neg_images = get_images(neu_neg_images_directory)
-    # neu_pos_images = get_imates(neu_pos_images_directory)
-
-    jump_start = points[1]
-    jump_points = list(points)
-    jump_points.remove(jump_start)
-
     for block in range(0,total_blocks):
-        block_stimuli = dict(stimuli)
         if(practice_blocks >= 1):
-            block_trials = practice_trials
-            block_trial_counter = [[1]*len(points),[1]*len(points),[1]*(len(points)-1),
-            [1]*(len(points)-1),[1]*(len(points)-1),[1]*(len(points)-1)]
+            block_trials = practice_trials//2
+            block_trial_counter = [[1]]*practice_trials
             practice_blocks = practice_blocks-1
         else:
             block_trials = num_trials
             block_trial_counter = []
             for trial_type in trial_types:
-                if not trial_type[2]:
-                    block_trial_counter.append([trial_type[3]/len(points)]*len(points))
-                else:
-                    block_trial_counter.append([trial_type[3]/(len(points)-1)]*(len(points)-1))
+                block_trial_counter.append([trial_type[3]/3]*3)
         
         for trial_num in range(0,block_trials):
             
             # some sort of RNG here
-            rot_img_1 = number_of_angles * randrange(0,360/number_of_angles)
+            rot_img_1, rot_img_2, rot_img_3 = 0, 0, 0
             trial_set = False
             while not trial_set:
                 trial_type = random.choices(trial_types,trial_probs)[0]
@@ -153,46 +137,20 @@ def main():
                     continue
 
             # trial picked, set up images
-            img_1 = random.choice(block_stimuli[trial_type[0]])
-            img_2 = random.choice(block_stimuli[trial_type[1]])
-            if trial_type_idx > 4:
-                img_1 = "neu_" + img_2
-            if(trial_type[2]): # jump or not
-                img_1_pos = jump_start
-                jump_direction = random.randint(0,len(jump_points)-1) # this really only works in this specific case. needs to be fixed
-                if block_trial_counter[trial_type_idx][jump_direction] > 0:
-                    img_2_pos = jump_points[jump_direction]
-                    block_trial_counter[trial_type_idx][jump_direction] = block_trial_counter[trial_type_idx][jump_direction] - 1
-                else:
-                    img_2_pos = jump_points[len(jump_points)-1-jump_direction]
-                    block_trial_counter[trial_type_idx][len(block_trial_counter[trial_type_idx])-1-jump_direction] = block_trial_counter[trial_type_idx][len(block_trial_counter[trial_type_idx])-1-jump_direction] - 1
-                rot_img_2 = 0
-            else: # not a jump
-                img_pos = random.randint(0,len(points)-1)
-                while block_trial_counter[trial_type_idx][img_pos] <= 0: # that position is maxxed, choose another one
-                    img_pos = random.randint(0,len(points)-1)
-                img_1_pos = img_2_pos = points[img_pos]
-                rot_img_2 = rot_img_1
-                block_trial_counter[trial_type_idx][img_pos] = block_trial_counter[trial_type_idx][img_pos] - 1
-            block_stimuli[trial_type[1]].remove(img_2)
-            if block_stimuli[trial_type[1]].empty()
+            img_1 = trial_type[0]
+            img_2 = trial_type[1]
+            img_3 = trial_type[1]
+            
+            # chose a position at random
+            trial_points = list(flash_points[trial_type[2]])
+            img_1_pos = random.choice(trial_points)
+            trial_points.remove(img_1_pos)
+            img_2_pos = random.choice(trial_points)
+            trial_points.remove(img_2_pos)
+            img_3_pos = random.choice(trial_points)
+            # positions have been determined.
 
-                
-
-            # #figure out positions
-            # # get image sizes
-            # img_1_width, img_1_height = get_image_size(stimuli_dirs[trial_type[0]] + img_1)
-            # img_1_diag = math.hypot(img_1_width, img_1_height)
-            # img_1_scale = img_1_diag*su.screen_height/float(safety_margin_1)/100
-            # img_1_width /= img_1_scale
-            # img_1_height /= img_1_scale
-            # img_1_diag = float(safety_margin_1)*su.screen_height/100
-            # img_2_width, img_2_height = get_image_size(stimuli_dirs[trial_type[1]] + img_2)
-            # img_2_diag = math.hypot(img_2_width, img_2_height)
-            # img_2_scale = img_2_diag*su.screen_height/float(safety_margin_2)/100
-            # img_2_width /= img_2_scale
-            # img_2_height /= img_2_scale
-            # img_2_diag = float(safety_margin_2)*su.screen_height/100
+            mask = trial_type[4]
 
             #identifier
             trial_config = str(block+1) + delimiter
@@ -236,8 +194,8 @@ def main():
             trial_config += str(0) + delimiter # not used in oddball image_off
 
             #image 3
-            trial_config += delimiter # (image_3.split('.'))[0] + delimiter
-            trial_config += str(number_of_angles * randrange(0,360/number_of_angles)) + delimiter
+            trial_config += (img_3.split('.'))[0] + delimiter
+            trial_config += str(rot_img_3) + delimiter
             trial_config += su.format_string.format(safety_margin_3) + delimiter
             trial_config += str(0) + delimiter # we're gonna assume target 1 will always be the oddball since, well, we're scripting here
             trial_config += str(0) + delimiter # dyn_mask_flag not used
@@ -249,9 +207,11 @@ def main():
             trial_config += str(1) + delimiter #oddball_flag
             trial_config += su.format_string.format(img_2_pos[0]) + delimiter
             trial_config += su.format_string.format(img_2_pos[1]) + delimiter
-            trial_config += delimiter #su.format_string.format(pos_img_3[0]) + delimiter
-            trial_config += delimiter #su.format_string.format(pos_img_3[1]) + delimiter
-            trial_config += str(ask_for_target)
+            trial_config += su.format_string.format(img_3_pos[0]) + delimiter
+            trial_config += su.format_string.format(img_3_pos[1]) + delimiter
+            trial_config += str(ask_for_target) + delimiter
+            trial_config += mask + delimiter
+            trial_config += "0.5"
             print(trial_config)
         practice_blocks = max(practice_blocks-1,0)
     return
